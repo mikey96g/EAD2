@@ -1,3 +1,5 @@
+from functools import reduce
+
 curr_xe = {'USD':1.2,'CAD':1.6,'GBP':1.4 }
 
 def convert(currencey,value):
@@ -19,13 +21,17 @@ bankAccount = []
 
 def debit(value):
 	bankAccount.append(value)
+	return bankAccount
 	
 def credit(value):
-	try:
-		if value < 0:
-			bankAccount.append(value)
-	except ValueError:
-		val = print("That is an error must be minus")
+	if value > 0:
+		if value <= balAccount(bankAccount):
+			bankAccount.append(-value)
+		else:
+			raise ValueError('Insufficent funds')
+	else:
+		raise ValueError('Invalid amount, must be positive')
+		
 		
 def balAccount(bankAccount):
 	if len(bankAccount)==0:
@@ -34,9 +40,23 @@ def balAccount(bankAccount):
 		return bankAccount[0] + balAccount(bankAccount[1:])
 
 
+		
 print(len(bankAccount))
-credit(-23)
+debit(50)
+credit(25)
 debit(50)
 
 print(balAccount(bankAccount))	
 
+dollars = map(lambda euro: convert('USD',euro), bankAccount)
+
+# format transactions for display
+def format(a, b):
+    output = ''
+    if b < 0:
+        output += 'credit: '
+    else:
+        output += 'debit: '
+    return str(a) + output + str(b) + ' '
+output = reduce(format, bankAccount, '')
+print (output)
